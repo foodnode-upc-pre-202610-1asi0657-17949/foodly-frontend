@@ -12,66 +12,97 @@
 
       <form class="auth-form" @submit.prevent="handleRegister">
 
-        <div class="form-group">
-          <label class="form-group__label">Nombre(s)</label>
-          <div class="input-wrapper">
-            <span class="input-wrapper__icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </span>
-            <input v-model="form.firstName" type="text" class="input-wrapper__field" placeholder="Tu nombre" required />
+        <!-- ── CAMPOS COMENSAL ── -->
+        <template v-if="activeRole === 'comensal'">
+          <div class="form-group">
+            <label class="form-group__label">Nombre(s)</label>
+            <div class="input-wrapper">
+              <span class="input-wrapper__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <input v-model="form.firstName" type="text" class="input-wrapper__field" placeholder="Tu nombre" required />
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label class="form-group__label">Apellido(s)</label>
-          <div class="input-wrapper">
-            <span class="input-wrapper__icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </span>
-            <input v-model="form.lastName" type="text" class="input-wrapper__field" placeholder="Tu apellido" required />
+          <div class="form-group">
+            <label class="form-group__label">Apellido(s)</label>
+            <div class="input-wrapper">
+              <span class="input-wrapper__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <input v-model="form.lastName" type="text" class="input-wrapper__field" placeholder="Tu apellido" required />
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label class="form-group__label">Correo electrónico</label>
-          <div class="input-wrapper">
-            <span class="input-wrapper__icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            </span>
-            <input v-model="form.email" type="email" class="input-wrapper__field" placeholder="tucorreo@ejemplo.com" required />
+          <div class="form-group">
+            <label class="form-group__label">Correo electrónico</label>
+            <div class="input-wrapper">
+              <span class="input-wrapper__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              </span>
+              <input v-model="form.email" type="email" class="input-wrapper__field" placeholder="tucorreo@ejemplo.com" required />
+            </div>
           </div>
-        </div>
+        </template>
 
+        <!-- ── CAMPOS DUEÑO ── -->
+        <template v-else>
+          <div class="form-group">
+            <label class="form-group__label">Nombre restaurante</label>
+            <div class="input-wrapper">
+              <span class="input-wrapper__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+              </span>
+              <input v-model="form.restaurantName" type="text" class="input-wrapper__field" placeholder="Mi restaurante" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-group__label">Ruc</label>
+            <div class="input-wrapper">
+              <span class="input-wrapper__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </span>
+              <input v-model="form.ruc" type="text" class="input-wrapper__field" placeholder="102899192981" maxlength="11" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-group__label">Correo</label>
+            <div class="input-wrapper">
+              <span class="input-wrapper__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              </span>
+              <input v-model="form.email" type="email" class="input-wrapper__field" placeholder="mirestaurante@ejemplo.com" required />
+            </div>
+          </div>
+        </template>
+
+        <!-- ── CONTRASEÑA (ambos roles) ── -->
         <div class="form-group">
           <label class="form-group__label">Contraseña</label>
           <div class="input-wrapper">
-    <span class="input-wrapper__icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-    </span>
+            <span class="input-wrapper__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </span>
             <input v-model="form.password" :type="showPassword ? 'text' : 'password'" class="input-wrapper__field" placeholder="Mín. 8 caracteres" required />
             <button type="button" class="input-wrapper__eye" @click="showPassword = !showPassword">
               <svg v-if="!showPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
             </button>
           </div>
-
-          <!-- Checklist de requisitos -->
           <div v-if="form.password.length > 0" class="pwd-rules">
             <div class="pwd-rule" :class="{ 'pwd-rule--ok': rules.length }">
-              <span class="pwd-rule__icon">{{ rules.length ? '✓' : '✗' }}</span>
-              Mínimo 8 caracteres
+              <span class="pwd-rule__icon">{{ rules.length ? '✓' : '✗' }}</span> Mínimo 8 caracteres
             </div>
             <div class="pwd-rule" :class="{ 'pwd-rule--ok': rules.upper }">
-              <span class="pwd-rule__icon">{{ rules.upper ? '✓' : '✗' }}</span>
-              Una letra mayúscula
+              <span class="pwd-rule__icon">{{ rules.upper ? '✓' : '✗' }}</span> Una letra mayúscula
             </div>
             <div class="pwd-rule" :class="{ 'pwd-rule--ok': rules.number }">
-              <span class="pwd-rule__icon">{{ rules.number ? '✓' : '✗' }}</span>
-              Un número
+              <span class="pwd-rule__icon">{{ rules.number ? '✓' : '✗' }}</span> Un número
             </div>
             <div class="pwd-rule" :class="{ 'pwd-rule--ok': rules.special }">
-              <span class="pwd-rule__icon">{{ rules.special ? '✓' : '✗' }}</span>
-              Un símbolo (!@#$...)
+              <span class="pwd-rule__icon">{{ rules.special ? '✓' : '✗' }}</span> Un símbolo (!@#$...)
             </div>
           </div>
         </div>
@@ -94,7 +125,7 @@
         <p v-if="errorMsg" class="form-error">{{ errorMsg }}</p>
 
         <button type="submit" class="btn-submit" :disabled="loading || passwordMismatch || !passwordValid">
-          <span v-if="!loading">Registrarse →</span>
+          <span v-if="!loading">Entrar →</span>
           <span v-else>Registrando...</span>
         </button>
 
@@ -123,6 +154,8 @@ export default {
       form: {
         firstName: '',
         lastName: '',
+        restaurantName: '',
+        ruc: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -155,14 +188,25 @@ export default {
       this.loading = true
 
       try {
-        const res = await authApi.register({
-          firstName: this.form.firstName,
-          lastName:  this.form.lastName,
-          username:  this.form.email.split('@')[0],
-          email:     this.form.email,
-          password:  this.form.password,
-          roles: this.activeRole === 'comensal' ? ['CLIENT'] : ['HUARIQUE_ADMIN']
-        })
+        const payload = this.activeRole === 'comensal'
+            ? {
+              firstName: this.form.firstName,
+              lastName:  this.form.lastName,
+              username:  this.form.email.split('@')[0],
+              email:     this.form.email,
+              password:  this.form.password,
+              roles: ['CLIENT']
+            }
+            : {
+              firstName: this.form.restaurantName,
+              lastName:  this.form.ruc,
+              username:  this.form.email.split('@')[0],
+              email:     this.form.email,
+              password:  this.form.password,
+              roles: ['HUARIQUE_ADMIN']
+            }
+
+        const res = await authApi.register(payload)
 
         if (res.accessToken) {
           localStorage.setItem('foodly_token', res.accessToken)
@@ -182,8 +226,6 @@ export default {
 </script>
 
 <style scoped>
-
-
 .auth-page {
   min-height: 100vh;
   background-color: var(--color-bg);
@@ -266,30 +308,6 @@ export default {
   color: var(--color-input-icon); display: flex; align-items: center; padding: 0;
 }
 
-/* Password strength */
-.password-strength {
-  display: flex; align-items: center; gap: 10px; margin-top: 2px;
-}
-
-.password-strength__bar {
-  flex: 1; height: 4px;
-  background: var(--color-input-border);
-  border-radius: 99px; overflow: hidden;
-}
-
-.password-strength__fill {
-  height: 100%; border-radius: 99px; transition: width 0.3s, background 0.3s;
-}
-
-.password-strength__label { font-size: 0.72rem; font-weight: 700; min-width: 65px; text-align: right; }
-
-.strength--weak  { background: #ef4444; color: #ef4444; }
-.strength--fair  { background: #f97316; color: #f97316; }
-.strength--good  { background: #eab308; color: #eab308; }
-.strength--strong { background: #22c55e; color: #22c55e; }
-
-.field-hint { font-size: 0.75rem; color: var(--color-input-icon); font-weight: 500; }
-
 .form-error { font-size: 0.8rem; color: var(--color-error); font-weight: 500; }
 
 .btn-submit {
@@ -309,37 +327,18 @@ export default {
 .auth-link__a { color: var(--color-brand-light); font-weight: 700; text-decoration: none; }
 .auth-link__a:hover { text-decoration: underline; }
 
-
 .pwd-rules {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 6px;
-  padding: 10px 12px;
-  background: var(--color-input-bg);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-input-border);
+  display: flex; flex-direction: column; gap: 5px; margin-top: 6px;
+  padding: 10px 12px; background: var(--color-input-bg);
+  border-radius: var(--radius-md); border: 1px solid var(--color-input-border);
 }
 
 .pwd-rule {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--color-input-icon);
-  transition: color 0.2s;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.78rem; font-weight: 500; color: var(--color-input-icon); transition: color 0.2s;
 }
 
-.pwd-rule--ok {
-  color: #22c55e;
-}
+.pwd-rule--ok { color: #22c55e; }
 
-.pwd-rule__icon {
-  font-size: 0.75rem;
-  font-weight: 800;
-  width: 14px;
-  text-align: center;
-}
-
+.pwd-rule__icon { font-size: 0.75rem; font-weight: 800; width: 14px; text-align: center; }
 </style>

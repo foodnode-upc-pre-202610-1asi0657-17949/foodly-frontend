@@ -11,6 +11,21 @@ const authHeaders = () => ({
     'Authorization': `Bearer ${token()}`
 })
 
+/**
+ * Helper para llamadas autenticadas que necesitan distinguir status code
+ * (ej. 404 = "todavía no existe", a diferencia de un error real).
+ * Devuelve { ok, status, data }.
+ */
+async function authFetch(url, options = {}) {
+    const res = await fetch(url, {
+        ...options,
+        headers: { ...authHeaders(), ...(options.headers || {}) }
+    })
+    let data = null
+    try { data = await res.json() } catch (_) { /* respuesta sin body */ }
+    return { ok: res.ok, status: res.status, data }
+}
+
 export const authApi = {
     login:    (data) => fetch(`${BASE.identity}/auth/login`,    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(r => r.json()),
     register: (data) => fetch(`${BASE.identity}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(r => r.json()),
@@ -19,6 +34,12 @@ export const authApi = {
 export const businessApi = {
     getHuariques: ()      => fetch(`${BASE.business}/huariques`,          { headers: authHeaders() }).then(r => r.json()),
     getMenu:      (id)    => fetch(`${BASE.business}/huariques/${id}/menu`, { headers: authHeaders() }).then(r => r.json()),
+    updateMenu:   (id, menu) => authFetch(`${BASE.business}/huariques/${id}/menu`, { method: 'PUT', body: JSON.stringify({ menu }) }),
+
+    // Endpoints del dueño (requieren rol HUARIQUE_ADMIN)
+    getMyRestaurant:    ()     => authFetch(`${BASE.business}/huariques/me`),
+    createRestaurant:   (data) => authFetch(`${BASE.business}/huariques`,    { method: 'POST', body: JSON.stringify(data) }),
+    updateMyRestaurant: (data) => authFetch(`${BASE.business}/huariques/me`, { method: 'PUT',  body: JSON.stringify(data) }),
 }
 
 export const communityApi = {
@@ -32,4 +53,3 @@ export const communityApi = {
 export const userApi = {
     getProfile: () => fetch(`${BASE.identity}/users/me`, { headers: authHeaders() }).then(r => r.json()),
 }
-
