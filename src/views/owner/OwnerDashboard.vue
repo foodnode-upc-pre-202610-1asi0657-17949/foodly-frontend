@@ -89,7 +89,7 @@
         <div class="quick-access">
           <h2 class="section-title">Accesos Rápidos</h2>
           <div class="quick-access__list">
-            <router-link to="/mi-menu" class="quick-card">
+            <router-link to="/owner-perfil" class="quick-card">
               <div class="quick-card__icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
