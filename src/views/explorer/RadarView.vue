@@ -102,6 +102,7 @@
 import NavBar from '@/components/common/NavBar.vue'
 import RadarMapViewer from '@/components/explorer/RadarMapViewer.vue'
 import { useGeolocation } from '@/composables/useGeolocation.js'
+import { useH3Radar } from '@/composables/useH3Radar.js'
 import { useRadarStore } from '@/stores/radarStore.js'
 import { businessApi, communityApi } from '@/services/api.js'
 
@@ -111,9 +112,13 @@ export default {
 
   setup() {
     const { latitude, longitude, error: geoError, loading: geoLoading } = useGeolocation()
+    const { h3Index } = useH3Radar(latitude, longitude)
     const { huariques, loading: radarLoading, error: radarError, loadNearbyHuariques } = useRadarStore()
 
-    return { latitude, longitude, geoError, geoLoading, huariques, radarLoading, radarError, loadNearbyHuariques }
+    return {
+      latitude, longitude, geoError, geoLoading, h3Index,
+      huariques, radarLoading, radarError, loadNearbyHuariques
+    }
   },
 
   data() {
@@ -127,10 +132,10 @@ export default {
   },
 
   watch: {
-    latitude(newVal) {
-      if (newVal != null) {
-        this.loadNearbyHuariques(this.latitude, this.longitude)
-      }
+    h3Index(newH3Index, oldH3Index) {
+      if (!newH3Index || newH3Index === oldH3Index) return;
+      console.log(`¡Cruce de frontera H3! Escaneando zona...`)
+      this.loadNearbyHuariques(this.latitude, this.longitude)
     }
   },
 

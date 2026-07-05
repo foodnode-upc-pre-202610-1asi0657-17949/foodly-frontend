@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const BASE = {
     identity:  '/identity-api',
     business:  '/business-api',
@@ -52,4 +54,8 @@ export const communityApi = {
 
 export const userApi = {
     getProfile: () => fetch(`${BASE.identity}/users/me`, { headers: authHeaders() }).then(r => r.json()),
+}
+
+export const radarApi = {
+    post: (url, data) => axios.post(`http://localhost:8081${url}`, data)
 }
