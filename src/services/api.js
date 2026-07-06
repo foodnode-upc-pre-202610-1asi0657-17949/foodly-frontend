@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const BASE = {
-    identity:  '/identity-api',
-    business:  '/business-api',
-    community: '/community-api',
+    identity:  'http://localhost:8080/foodly-identity-service/api',
+    business:  'http://localhost:8080/foodly-business-service/api',
+    community: 'http://localhost:8080/foodly-community-service/api',
 }
 
 const token = () => localStorage.getItem('foodly_token')
@@ -57,5 +57,9 @@ export const userApi = {
 }
 
 export const radarApi = {
-    post: (url, data) => axios.post(`http://localhost:8081${url}`, data)
+    post: (url, data) => axios.post(
+        `http://localhost:8080/foodly-radar-service/api${url}`,
+        data,
+        { headers: authHeaders() }
+    )
 }

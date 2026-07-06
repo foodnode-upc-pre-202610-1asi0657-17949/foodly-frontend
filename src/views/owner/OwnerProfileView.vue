@@ -205,7 +205,7 @@
 
           <!-- Mapa -->
           <section class="card card--map">
-            <h2 class="card__title">Ubicación en Mapa</h2>
+            <h2 class="card__title">Ubicación (Coordenadas)</h2>
             <div class="map-placeholder">
               <div class="map-placeholder__pin">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1">
@@ -213,12 +213,16 @@
                 </svg>
               </div>
             </div>
-            <button class="btn-location">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-              </svg>
-              Ajustar ubicación exacta
-            </button>
+            <div style="padding: 1rem; display: flex; gap: 1rem; border-top: 1.5px solid var(--color-input-border);">
+              <div class="form-group" style="flex: 1; margin: 0;">
+                <label class="form-group__label">Latitud</label>
+                <input v-model.number="form.latitude" type="number" step="any" class="form-input" />
+              </div>
+              <div class="form-group" style="flex: 1; margin: 0;">
+                <label class="form-group__label">Longitud</label>
+                <input v-model.number="form.longitude" type="number" step="any" class="form-input" />
+              </div>
+            </div>
           </section>
 
         </div>
@@ -268,7 +272,10 @@ export default {
         cuisine: '',
         address: '',
         phone: '',
-        priceRange: ''
+        priceRange: '',
+        // Coordenadas por defecto (Cerca a San Juan de Miraflores / Surco)
+        latitude: -12.174255247214946,
+        longitude: -76.9949405256348
       },
       isOpen: true,
       photos: [],
@@ -318,7 +325,10 @@ export default {
         address: this.form.address,
         cuisineType: this.form.cuisine,
         phone: this.form.phone,
-        priceRange: this.form.priceRange
+        priceRange: this.form.priceRange,
+        // ¡Se envían a Java!
+        latitude: this.form.latitude,
+        longitude: this.form.longitude
       }
     },
 
@@ -329,6 +339,9 @@ export default {
         cuisineType: this.form.cuisine,
         phone: this.form.phone,
         priceRange: this.form.priceRange,
+        // ¡Se envían a Java!
+        latitude: this.form.latitude,
+        longitude: this.form.longitude,
         isOpen: this.isOpen,
         photos: this.photos,
         schedule: this.schedule.map(d => ({
@@ -351,12 +364,27 @@ export default {
       this.successMsg = ''
       try {
         if (this.isNewRestaurant) {
-          await restaurantService.createRestaurant(this.buildCreatePayload())
-          await restaurantService.updateMyRestaurant(this.buildPayload())
+          // 1. Crear el local
+          const createRes = await restaurantService.createRestaurant(this.buildCreatePayload())
+          if (createRes && createRes.ok === false) {
+            throw new Error(`Fallo al crear (Código: ${createRes.status || 'desconocido'})`)
+          }
+
+          // 2. Actualizar horarios y fotos
+          const updateRes = await restaurantService.updateMyRestaurant(this.buildPayload())
+          if (updateRes && updateRes.ok === false) { // ¡Corregido aquí!
+            throw new Error(`Fallo al actualizar (Código: ${updateRes.status || 'desconocido'})`)
+          }
+
           this.isNewRestaurant = false
         } else {
-          await restaurantService.updateMyRestaurant(this.buildPayload())
+          // Si ya existe, solo actualiza
+          const updateRes = await restaurantService.updateMyRestaurant(this.buildPayload())
+          if (updateRes && updateRes.ok === false) { // ¡Corregido aquí!
+            throw new Error(`Fallo al actualizar (Código: ${updateRes.status || 'desconocido'})`)
+          }
         }
+
         this.successMsg = 'Cambios guardados correctamente ✓'
         setTimeout(() => { this.successMsg = '' }, 3000)
       } catch (e) {
