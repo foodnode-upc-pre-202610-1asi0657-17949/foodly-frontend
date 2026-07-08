@@ -90,6 +90,7 @@
             :huariques="huariques"
             :loading="radarLoading"
             :selected-huarique-id="selectedHuarique?.id || null"
+            :h3-geojson="kRingGeojson"
             @select-huarique="goToDetail"
         />
       </section>
@@ -112,11 +113,11 @@ export default {
 
   setup() {
     const { latitude, longitude, error: geoError, loading: geoLoading } = useGeolocation()
-    const { h3Index } = useH3Radar(latitude, longitude)
+    const { h3Index, kRingGeojson } = useH3Radar(latitude, longitude)
     const { huariques, loading: radarLoading, error: radarError, loadNearbyHuariques } = useRadarStore()
 
     return {
-      latitude, longitude, geoError, geoLoading, h3Index,
+      latitude, longitude, geoError, geoLoading, h3Index, kRingGeojson,
       huariques, radarLoading, radarError, loadNearbyHuariques
     }
   },

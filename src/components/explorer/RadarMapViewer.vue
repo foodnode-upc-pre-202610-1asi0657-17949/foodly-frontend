@@ -45,7 +45,11 @@ export default {
     userLng: { type: Number, default: null },
     huariques: { type: Array, default: () => [] },
     loading: { type: Boolean, default: false },
-    selectedHuariqueId: { type: String, default: null }
+    selectedHuariqueId: { type: String, default: null },
+    h3Geojson: {
+      type: Object,
+      default: () => ({ type: 'FeatureCollection', features: [] })
+    }
   },
   emits: ['select-huarique'],
 
@@ -80,6 +84,12 @@ export default {
         this.initMapIfNeeded()
         this.renderUserMarker()
       }
+    },
+    h3Geojson: {
+      handler() {
+        this.renderH3Cells()
+      },
+      deep: true
     },
     selectedHuariqueId(newId) {
       if (newId) {
@@ -120,6 +130,43 @@ export default {
       this.map.on('load', () => {
         this.renderUserMarker()
         this.renderHuariqueMarkers()
+        this.renderH3Cells()
+      })
+    },
+
+    renderH3Cells() {
+      if (!this.map || !this.map.isStyleLoaded()) return
+
+      const data = this.h3Geojson || { type: 'FeatureCollection', features: [] }
+
+      const source = this.map.getSource('h3-cells')
+      if (source) {
+        source.setData(data)
+        return
+      }
+
+      this.map.addSource('h3-cells', { type: 'geojson', data })
+
+      this.map.addLayer({
+        id: 'h3-cells-fill',
+        type: 'fill',
+        source: 'h3-cells',
+        paint: {
+          // La celda central (donde estás parado) resalta un poco más que las vecinas
+          'fill-color': ['case', ['get', 'isCenter'], '#4285f4', '#00c88c'],
+          'fill-opacity': ['case', ['get', 'isCenter'], 0.18, 0.08]
+        }
+      })
+
+      this.map.addLayer({
+        id: 'h3-cells-outline',
+        type: 'line',
+        source: 'h3-cells',
+        paint: {
+          'line-color': ['case', ['get', 'isCenter'], '#4285f4', '#00c88c'],
+          'line-width': 1.5,
+          'line-opacity': 0.6
+        }
       })
     },
 
@@ -177,6 +224,7 @@ export default {
       this.map.once('style.load', () => {
         this.renderUserMarker()
         this.renderHuariqueMarkers()
+        this.renderH3Cells()
         if (this.selectedHuariqueId) this.drawRoute()
       })
     },
