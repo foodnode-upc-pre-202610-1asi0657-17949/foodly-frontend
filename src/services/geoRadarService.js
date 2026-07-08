@@ -1,8 +1,7 @@
 import { radarApi } from '@/services/api.js'
 
-
 function distanceInMeters(lat1, lon1, lat2, lon2) {
-    const R = 6371000 // radio de la Tierra en metros
+    const R = 6371000
     const toRad = (deg) => (deg * Math.PI) / 180
 
     const dLat = toRad(lat2 - lat1)
@@ -19,23 +18,23 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
 
 export const geoRadarService = {
     /**
-     * Trae los huariques desde REDIS (vía H3) y calcula los metros exactos
+     * Trae los huariques desde REDIS (vía H3), calcula los metros exactos
+     * y descarta los que caen fuera del radio real permitido.
+     *
+     * @param {number} maxDistanceMeters - radio máximo aceptado (por defecto 500m,
+     *   acorde al alcance real de un k-ring=1 en resolución 9)
      */
-    async getNearbyHuariques(userLat, userLng) {
-        // 1. LLAMADA AL MICROSERVICIO DE RADAR (REDIS)
-        // Ya no descargamos la BD entera. Solo enviamos coordenadas.
+    async getNearbyHuariques(userLat, userLng, maxDistanceMeters = 500) {
         const response = await radarApi.post('/radar/search', {
             latitude: userLat,
             longitude: userLng,
             kRingRadius: 1 // 1 anillo de hexágonos a la redonda
         });
 
-        const huariquesEnMiZona = response.data; // Dependiendo de Axios, podría ser data.data
+        const huariquesEnMiZona = response.data;
 
         if (!Array.isArray(huariquesEnMiZona)) return [];
 
-        // 2. ORDENAMIENTO FINO (Frontend)
-        // Aplicamos Haversine solo a los pocos locales devueltos por la caché
         return huariquesEnMiZona
             .filter(h => h.latitude != null && h.longitude != null)
             .map(h => ({
@@ -44,6 +43,7 @@ export const geoRadarService = {
                     distanceInMeters(userLat, userLng, h.latitude, h.longitude)
                 )
             }))
+            .filter(h => h.distanceMeters <= maxDistanceMeters) // 👈 filtro real de radio
             .sort((a, b) => a.distanceMeters - b.distanceMeters)
     }
 }
