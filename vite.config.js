@@ -19,20 +19,21 @@ export default defineConfig({
     allowedHosts: ['frontend', 'localhost'],
     proxy: {
       '/identity-api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/identity-api/, '/foodly-identity-service/api')
+        target: 'http://10.0.2.3:8080',
+        changeOrigin: true
       },
       '/business-api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/business-api/, '/foodly-business-service/api')
+        target: 'http://10.0.2.3:8080',
+        changeOrigin: true
       },
       '/community-api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/community-api/, '/foodly-community-service/api')
+        target: 'http://10.0.2.3:8080',
+        changeOrigin: true
       },
+      '/radar-api': {
+        target: 'http://10.0.2.3:8080',
+        changeOrigin: true
+      }
     }
   }
 })
