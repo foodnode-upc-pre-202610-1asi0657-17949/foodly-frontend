@@ -24,7 +24,7 @@ export const geoRadarService = {
      * @param {number} maxDistanceMeters - radio máximo aceptado (por defecto 500m,
      *   acorde al alcance real de un k-ring=1 en resolución 9)
      */
-    async getNearbyHuariques(userLat, userLng, maxDistanceMeters = 500) {
+    async getNearbyHuariques(userLat, userLng, maxDistanceMeters = 650) {
         const response = await radarApi.post('/radar/search', {
             latitude: userLat,
             longitude: userLng,
